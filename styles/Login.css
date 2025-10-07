@@ -1,0 +1,257 @@
+/* ============================= */
+/* 🧩 GLOBAL STYLES */
+/* ============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: #f4f6fa;
+  color: #333;
+}
+
+/* ============================= */
+/* 🏠 LAYOUT */
+/* ============================= */
+.main-container {
+  display: flex;
+  height: 100vh;
+  flex-wrap: wrap;
+}
+
+/* LEFT SIDE */
+.left-section {
+  flex: 1;
+  background: linear-gradient(135deg, #1e3d8f, #2c56d1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+  padding: 40px;
+  min-width: 300px;
+}
+
+.left-section .logo img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.left-section h1 {
+  font-size: 1rem;
+  letter-spacing: 1px;
+  line-height: 1.6;
+  max-width: 320px;
+  opacity: 0.95;
+}
+
+/* RIGHT SIDE */
+.right-section {
+  flex: 1;
+  background-color: #f9fafc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-width: 400px;
+}
+
+/* ============================= */
+/* 🧾 FORM STYLES */
+/* ============================= */
+.form-box {
+  width: 100%;
+  max-width: 380px;
+  background: #ffffff;
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.form-box.active {
+  display: block;
+}
+
+.form-box h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #1e3d8f;
+  font-weight: 600;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #444;
+  font-weight: 500;
+}
+
+/* INPUTS & SELECTS */
+input,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  transition: 0.2s;
+  background: #fdfdfd;
+}
+
+/* Focus Effects */
+input:focus,
+select:focus {
+  border-color: #1e3d8f;
+  box-shadow: 0 0 0 3px rgba(30, 61, 143, 0.1);
+  outline: none;
+}
+
+/* Custom Dropdown */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%231e3d8f' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  cursor: pointer;
+  padding-right: 35px;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  background: linear-gradient(135deg, #1e3d8f, #274fb8);
+  color: #fff;
+  padding: 12px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 5px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease-in-out;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #17306c, #1e3d8f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(30, 61, 143, 0.2);
+}
+
+/* LINKS */
+.forgot {
+  text-align: right;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.switch {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.switch a {
+  color: #1e3d8f;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #e74c3c;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ============================= */
+/* 📱 RESPONSIVE DESIGN */
+/* ============================= */
+
+/* Tablets */
+@media (max-width: 900px) {
+  .left-section h1 {
+    font-size: 0.95rem;
+  }
+
+  .left-section .logo img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .form-box {
+    max-width: 340px;
+  }
+}
+
+/* Phones */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-section {
+    width: 100%;
+    padding: 30px 20px;
+  }
+
+  .right-section {
+    width: 100%;
+    padding: 40px 20px;
+  }
+
+  .form-box {
+    max-width: 100%;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  input,
+  select,
+  button {
+    border-radius: 6px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .left-section .logo img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .left-section h1 {
+    font-size: 0.8rem;
+  }
+
+  input,
+  button,
+  select {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .switch,
+  .forgot {
+    font-size: 12px;
+  }
+}
