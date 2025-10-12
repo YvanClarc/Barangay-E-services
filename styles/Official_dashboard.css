@@ -109,7 +109,6 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 5px;
-  cursor: pointer;
 }
 
 .card {
@@ -119,27 +118,25 @@ body {
   text-align: center;
   background: #fff;
   transition: all 0.3s ease;
-  cursor: pointer;
 }
 
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
 }
 
 .card p {
   font-weight: 600;
   margin-bottom: 8px;
   font-size: 14px;
-  cursor: pointer;
 }
 
 .card span {
   font-size: 20px;
   font-weight: bold;
-  cursor: pointer;
 }
+
+
 
 /* Colors */
 .card.blue p { color: #1e3d8f; }
@@ -147,6 +144,77 @@ body {
 .card.green p { color: #27ae60; }
 .card.red p { color: #e74c3c; }
 .card.orange p { color: #e67e22; }
+
+/* ==== MODAL STYLES ==== */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 15px;
+      color: #1e3d8f;
+      font-size: 20px;
+    }
+
+    .modal-content form input,
+    .modal-content form select,
+    .modal-content form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #999;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .modal-content form button {
+      width: 100%;
+      background: #1e3d8f;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .modal-content form button:hover {
+      background: #274ea1;
+    }
 
 /* === MESSAGE MODAL COLORS === */
 .message-success h2 {
@@ -172,6 +240,136 @@ body {
 .message-error button:hover {
   background-color: #1e3d8f;
 }
+
+/* === USER TABLE STYLES === */
+.users-section {
+  margin-top: 40px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.users-section h2 {
+  margin-bottom: 15px;
+  color: #1e3d8f;
+  font-size: 20px;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.user-table th, .user-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.user-table th {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.active {
+  background: #d4edda;
+  color: #155724;
+}
+
+.approve-btn, .delete-btn {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  color: white;
+}
+
+.approve-btn {
+  background: #28a745;
+  margin-right: 5px;
+}
+
+.approve-btn:hover {
+  background: #218838;
+}
+
+.delete-btn {
+  background: #dc3545;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+/* === USERS HEADER & SEARCH BAR === */
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  padding: 5px 10px;
+}
+
+.search-container i {
+  margin-right: 8px;
+  color: #555;
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  padding: 5px;
+  width: 180px;
+  font-size: 14px;
+}
+
+.add-user-btn {
+  background-color: #1e3d8f;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.3s;
+}
+
+.add-user-btn:hover {
+  background-color: #274bb5;
+}
+
+
 
 
 

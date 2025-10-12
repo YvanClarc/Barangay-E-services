@@ -7,80 +7,10 @@ session_start();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barangay Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/Official_dashboard.css">
-  <style>
-    /* ==== MODAL STYLES ==== */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
 
-    .modal-content {
-      background-color: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.9);}
-      to {opacity: 1; transform: scale(1);}
-    }
-
-    .close-btn {
-      float: right;
-      font-size: 20px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #333;
-    }
-
-    .modal-content h2 {
-      margin-bottom: 15px;
-      color: #1e3d8f;
-      font-size: 20px;
-    }
-
-    .modal-content form input,
-    .modal-content form select,
-    .modal-content form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #999;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .modal-content form button {
-      width: 100%;
-      background: #1e3d8f;
-      color: #fff;
-      border: none;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .modal-content form button:hover {
-      background: #274ea1;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -124,50 +54,107 @@ session_start();
         <?php endif; ?>
 
         <div class="cards">
-          <div class="card blue" onclick="openModal('residentModal')">
-            <p>Add Resident</p>
+          <div class="card blue">
+            <p>Total Users</p>
           </div>
-          <div class="card yellow" onclick="openModal('indigencyModal')">
-            <p>Indigency</p>
+          <div class="card yellow">
+            <p>Total Certificates Requested</p>
           </div>
-          <div class="card green" onclick="openModal('certificateModal')">
-            <p>Certificate</p>
+          <div class="card green">
+            <p>Total Complaints Filed</p>
           </div>
-          <div class="card red" onclick="openModal('permitModal')">
-            <p>Permit</p>
-          </div>
-          <div class="card orange" onclick="openModal('complaintModal')">
-            <p>Complaint</p>
-          </div>
-      </section>
-    </main>
+        </div>
+        <?php
+          require 'config.php';
+
+          $query = "SELECT id, first_name, last_name, email, role, account_status FROM tbl_users ORDER BY id DESC";
+          $result = $conn->query($query);
+        ?>
+
+          <!-- === Registered Users Table === -->
+          <section class="users-section">
+            <div class="users-header">
+              <h2>Registered Users</h2>
+
+              <div class="header-actions">
+                <div class="search-container">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="userSearch" placeholder="Search users..." onkeyup="searchUsers()">
+                </div>
+                <button class="add-user-btn" onclick="openModal('residentModal')">
+                  <i class="fas fa-user-plus"></i> Add User
+                </button>
+              </div>
+            </div>
+
+            <table class="user-table" id="userTable">
+              <thead>
+                <tr>
+                  <th>User ID</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if ($result->num_rows > 0): ?>
+                  <?php while($row = $result->fetch_assoc()): ?>
+                    <tr>
+                      <td><?= $row['id']; ?></td>
+                      <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
+                      <td><?= htmlspecialchars($row['email']); ?></td>
+                      <td><?= ucfirst($row['role']); ?></td>
+                      <td>
+                        <span class="status <?= $row['account_status'] === 'pending' ? 'pending' : ($row['account_status'] === 'active' ? 'active' : ''); ?>">
+                          <?= ucfirst($row['account_status']); ?>
+                        </span>
+                      </td>
+                      <td>
+                        <?php if ($row['account_status'] === 'pending'): ?>
+                          <button class="approve-btn" onclick="updateStatus(<?= $row['id']; ?>, 'active')">Approve</button>
+                        <?php endif; ?>
+                        <button class="delete-btn" onclick="deleteUser(<?= $row['id']; ?>)">Delete</button>
+                      </td>
+                    </tr>
+                  <?php endwhile; ?>
+                <?php else: ?>
+                  <tr><td colspan="6" style="text-align:center;">No users found.</td></tr>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </section>
+          </section>
+        </main>
+  </div> 
+
+    <!-- ✅ Add Resident Modal -->
+  <div id="residentModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('residentModal')">&times;</span>
+      <h2>Add User Information</h2>
+      <form method="POST" action="add_resident.php">
+        <input type="text" name="first_name" placeholder="First Name" required>
+        <input type="text" name="last_name" placeholder="Last Name" required>
+        <input type="date" name="birth_date" required>
+        <select name="gender" required>
+          <option value="">Select Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+        <input type="email" name="email" placeholder="Email Address" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role" required>
+          <option value="resident">Resident</option>
+          <option value="staff">Staff</option>
+          <option value="official">Official</option>
+        </select>
+        <button type="submit" name="register">Submit</button>
+      </form>
+    </div>
   </div>
 
-  <!-- ✅ Add Resident Modal -->
-<div id="residentModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal('residentModal')">&times;</span>
-    <h2>Add Resident Information</h2>
-    <form method="POST" action="add_resident.php">
-      <input type="text" name="first_name" placeholder="First Name" required>
-      <input type="text" name="last_name" placeholder="Last Name" required>
-      <input type="date" name="birth_date" required>
-      <select name="gender" required>
-        <option value="">Select Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-      </select>
-      <input type="email" name="email" placeholder="Email Address" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <select name="role" required>
-        <option value="resident">Resident</option>
-        <option value="staff">Staff</option>
-        <option value="official">Official</option>
-      </select>
-      <button type="submit" name="register">Submit</button>
-    </form>
-  </div>
-</div>
 
 <!-- ✅ Message Modal -->
 <div id="messageModal" class="modal" style="background: rgba(0,0,0,0.3); z-index: 1000;">
@@ -178,52 +165,7 @@ session_start();
   </div>
 </div>
 
-<script>
-  function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-
-  // ✅ NEW FUNCTION: Show success/error message modal
-  function showMessage(status, text) {
-  const modal = document.getElementById('messageModal');
-  const title = document.getElementById('messageTitle');
-  const messageText = document.getElementById('messageText');
-
-  // Reset old classes
-  modal.classList.remove('message-success', 'message-error');
-
-  // Apply styling based on status
-  if (status.toLowerCase() === 'success') {
-    modal.classList.add('message-success');
-    title.innerText = "✅ Success";
-  } else {
-    modal.classList.add('message-error');
-    title.innerText = "❌ Error";
-  }
-
-  messageText.innerText = text;
-  openModal('messageModal');
-}
-
-  // ✅ Close message modal only (keeps the form modal open)
-  function closeMessageModal() {
-    closeModal('messageModal');
-  }
-
-  // Close modal when clicking outside (for all except the inner message)
-  window.onclick = function(event) {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-      if (event.target === modal && modal.id !== 'messageModal') {
-        modal.style.display = 'none';
-      }
-    });
-  };
-</script>
+<script src="scripts/official_dashboard.js"></script>
 
 </body>
 </html>
