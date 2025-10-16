@@ -1,3 +1,35 @@
+<?php
+session_start();
+require_once 'config.php';
+
+// Make sure user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+$user_id = $_SESSION['user_id'];
+
+// Fetch user requests
+$stmt = $conn->prepare("SELECT * FROM tbl_requests WHERE id = ? ORDER BY r_id DESC");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$requests = [];
+while ($row = $result->fetch_assoc()) {
+    $requests[] = $row;
+}
+$total_requests = count($requests);
+$stmt->close(); 
+
+$pending_count = 0;
+$completed_count = 0;
+foreach ($requests as $req) {
+    if ($req['r_status'] === 'pending') $pending_count++;
+    if ($req['r_status'] === 'approved') $completed_count++;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +38,9 @@
   <title>User Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles/Official_dashboard.css" />
+  <link rel="stylesheet" href="styles/User_dashboard.css" />
 </head>
+
 <body>
   <div class="container">
     <!-- Sidebar -->
@@ -38,7 +72,7 @@
         <div class="cards">
           <div class="card blue">
             <p>Total Certificates Requested</p>
-            <span>3</span>
+            <span><?php echo $total_requests; ?></span>
           </div>
           <div class="card green">
             <p>Total Complaints Filed</p>
@@ -46,11 +80,11 @@
           </div>
           <div class="card yellow">
             <p>Pending Requests</p>
-            <span>2</span>
+            <span><?php echo $pending_count; ?></span>
           </div>
           <div class="card orange">
-            <p>Completed Requests</p>
-            <span>5</span>
+            <p>Approved Requests</p>
+            <span><?php echo $completed_count; ?></span>
           </div>
         </div>
 
@@ -77,38 +111,98 @@
               </tr>
             </thead>
             <tbody>
+            <?php if ($total_requests > 0): ?>
+              <?php foreach ($requests as $req): ?>
+                <tr>
+                  <td><?= htmlspecialchars($req['r_id']) ?></td>
+                  <td><?= htmlspecialchars($req['document_type']) ?></td>
+                  <td><?= htmlspecialchars($req['date_requested'] ?? '') ?></td>
+                  <td><span class="status <?= $req['r_status'] === 'pending' ? 'pending' : ($req['r_status'] === 'approved' ? 'active' : 'denied') ?>">
+                    <?= ucfirst($req['r_status']) ?>
+                  </span></td>
+                  <td>
+                    <?php if ($req['r_status'] === 'pending'): ?>
+                      <button class="action-btn edit-btn" onclick="editRequest(<?= $req['r_id'] ?>)">Edit</button>
+                      <button class="action-btn delete-btn" onclick="deleteRequest(<?= $req['r_id'] ?>)">Delete</button>
+                    <?php else: ?>
+                      <span style="color:#888;">No action</span>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
               <tr>
-                <td>001</td>
-                <td>Barangay Clearance</td>
-                <td>Oct 5, 2025</td>
-                <td><span class="status active">Approved</span></td>
-                <td>
-                  <button class="approve-btn">View</button>
-                </td>
+                <td colspan="5" style="text-align:center;">No requests found.</td>
               </tr>
-              <tr>
-                <td>002</td>
-                <td>Complaint Report</td>
-                <td>Oct 7, 2025</td>
-                <td><span class="status pending">Pending</span></td>
-                <td>
-                  <button class="approve-btn">View</button>
-                </td>
-              </tr>
-              <tr>
-                <td>003</td>
-                <td>Business Permit</td>
-                <td>Sep 30, 2025</td>
-                <td><span class="status active">Approved</span></td>
-                <td>
-                  <button class="approve-btn">View</button>
-                </td>
-              </tr>
+            <?php endif; ?>
             </tbody>
           </table>
         </div>
       </div>
+
+      <!-- Request Certificate Section -->
+      <div class="request-certificate-section section" id="requestCertificateSection" style="display:none;">
+        <h2>Request Barangay Certificate</h2>
+        <form method="POST" action="add_request.php" class="request-form">
+
+          <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" id="first_name" placeholder="Enter first name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="second_name">Second Name (Optional):</label>
+            <input type="text" name="second_name" id="second_name" placeholder="Enter second name">
+          </div>
+
+          <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" id="last_name" placeholder="Enter last name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender:</label>
+            <select name="gender" id="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="number" name="age" id="age" placeholder="Enter age" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="address">Address (Purok):</label>
+            <input type="text" name="address" id="address" placeholder="Enter your Purok" required>
+          </div>
+
+          <div class="form-group">
+            <label for="doc_type">Document Type:</label>
+            <select name="doc_type" id="doc_type" required>
+              <option value="">Select Document</option>
+              <option value="Barangay Certificate">Barangay Certificate</option>
+              <option value="Barangay Indigency">Barangay Indigency</option>
+              <option value="Business Permit">Business Permit</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="purpose">Purpose:</label>
+            <input type="text" name="purpose" id="purpose" placeholder="Purpose" required>
+          </div>
+
+          <button type="submit" class="add-request-btn">Submit Request</button>
+          <button type="button" class="add-request-btn" style="background:#e74c3c;margin-left:10px;" onclick="showDashboardSection()">Cancel</button>
+        </form>
+      </div>
     </div>
   </div>
+
+  <script src="scripts/user_dashboard.js"></script>
+  
 </body>
 </html>

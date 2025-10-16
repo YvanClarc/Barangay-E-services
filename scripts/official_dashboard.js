@@ -88,3 +88,19 @@ function searchUsers() {
   });
 }
 
+function updateRequestStatus(r_id, status) {
+  if (confirm("Are you sure you want to " + status + " this request?")) {
+    fetch('update_request_status.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'r_id=' + encodeURIComponent(r_id) + '&status=' + encodeURIComponent(status)
+    })
+    .then(res => res.text())
+    .then(data => {
+      alert('Request status updated.');
+      location.reload();
+    })
+    .catch(err => alert('Failed to update request.'));
+  }
+}
+

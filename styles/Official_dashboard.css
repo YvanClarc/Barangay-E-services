@@ -299,12 +299,19 @@ body {
 }
 
 .approve-btn {
-  background: #28a745;
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 14px;
   margin-right: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
 .approve-btn:hover {
-  background: #218838;
+  background: #219150;
 }
 
 .delete-btn {
@@ -313,6 +320,26 @@ body {
 
 .delete-btn:hover {
   background: #c82333;
+}
+
+.deny-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.deny-btn:hover {
+  background: #c0392b;
+}
+
+.status.denied {
+  background: #f8d7da;
+  color: #721c24;
 }
 
 /* === USERS HEADER & SEARCH BAR === */
@@ -368,10 +395,6 @@ body {
 .add-user-btn:hover {
   background-color: #274bb5;
 }
-
-
-
-
 
 /* ========================= */
 /* 📱 Responsive Design */

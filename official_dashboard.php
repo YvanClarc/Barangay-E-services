@@ -1,5 +1,29 @@
 <?php
 session_start();
+require 'config.php';
+
+// Count total users
+$user_count_query = "SELECT COUNT(*) AS total_users FROM tbl_users";
+$user_count_result = $conn->query($user_count_query);
+$user_count = 0;
+if ($user_count_result && $row = $user_count_result->fetch_assoc()) {
+    $user_count = $row['total_users'];
+}
+
+// Count total certificates requested (document_type = 'Barangay Certificate')
+$cert_count_query = "SELECT COUNT(*) AS total_certificates FROM tbl_requests";
+$cert_count_result = $conn->query($cert_count_query);
+$cert_count = 0;
+if ($cert_count_result && $row = $cert_count_result->fetch_assoc()) {
+    $cert_count = $row['total_certificates'];
+}
+
+// Fetch all requests
+$requests_query = "SELECT r.r_id, r.first_name, r.last_name, r.document_type, r.purpose, r.r_status, r.date_requested, u.email 
+                   FROM tbl_requests r
+                   LEFT JOIN tbl_users u ON r.id = u.id
+                   ORDER BY r.r_id DESC";
+$requests_result = $conn->query($requests_query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,11 +46,7 @@ session_start();
       </div>
       <nav class="nav">
         <a href="#" class="active">Dashboard</a>
-        <a href="#">Resident Information</a>
-        <a href="#">Barangay Certificate</a>
-        <a href="#">Barangay Of Indigency</a>
-        <a href="#">Business Permit</a>
-        <a href="#">Complaint Records</a>
+        <a href="#">Announcements</a>
         <a href="#">Calendar</a>
         <a href="#">Settings</a>
       </nav>
@@ -56,12 +76,15 @@ session_start();
         <div class="cards">
           <div class="card blue">
             <p>Total Users</p>
+            <span><?= $user_count ?></span>
           </div>
           <div class="card yellow">
             <p>Total Certificates Requested</p>
+            <span><?= $cert_count ?></span>
           </div>
           <div class="card green">
             <p>Total Complaints Filed</p>
+            <!-- You can add a similar counter for complaints if you want -->
           </div>
         </div>
         <?php
@@ -125,7 +148,55 @@ session_start();
               </tbody>
             </table>
           </section>
-          </section>
+          <!-- === Current Requests Table === -->
+          <section class="users-section requests-section">
+  <div class="users-header">
+    <h2>Current Requests</h2>
+  </div>
+  <table class="user-table" id="requestsTable">
+    <thead>
+      <tr>
+        <th>Request ID</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Document Type</th>
+        <th>Purpose</th>
+        <th>Status</th>
+        <th>Date Requested</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if ($requests_result && $requests_result->num_rows > 0): ?>
+        <?php while($req = $requests_result->fetch_assoc()): ?>
+          <tr>
+            <td><?= htmlspecialchars($req['r_id']) ?></td>
+            <td><?= htmlspecialchars($req['first_name'] . ' ' . $req['last_name']) ?></td>
+            <td><?= htmlspecialchars($req['email']) ?></td>
+            <td><?= htmlspecialchars($req['document_type']) ?></td>
+            <td><?= htmlspecialchars($req['purpose']) ?></td>
+            <td>
+              <span class="status <?= $req['r_status'] === 'pending' ? 'pending' : ($req['r_status'] === 'approved' ? 'active' : 'denied') ?>">
+                <?= ucfirst($req['r_status']) ?>
+              </span>
+            </td>
+            <td><?= htmlspecialchars($req['date_requested']) ?></td>
+            <td>
+              <?php if ($req['r_status'] === 'pending'): ?>
+                <button class="approve-btn" onclick="updateRequestStatus(<?= $req['r_id'] ?>, 'approved')">Approve</button>
+                <button class="deny-btn" onclick="updateRequestStatus(<?= $req['r_id'] ?>, 'denied')">Deny</button>
+              <?php else: ?>
+                <span style="color:#888;">No action</span>
+              <?php endif; ?>
+            </td>
+          </tr>
+        <?php endwhile; ?>
+      <?php else: ?>
+        <tr><td colspan="8" style="text-align:center;">No requests found.</td></tr>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</section>
         </main>
   </div> 
 
