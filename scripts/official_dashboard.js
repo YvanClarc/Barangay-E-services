@@ -5,12 +5,12 @@ function openModal(id) {
   console.log("Modal found:", modal);
 }
 
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+}
 
-  // ✅ NEW FUNCTION: Show success/error message modal
-  function showMessage(status, text) {
+// ✅ NEW FUNCTION: Show success/error message modal
+function showMessage(status, text) {
   const modal = document.getElementById('messageModal');
   const title = document.getElementById('messageTitle');
   const messageText = document.getElementById('messageText');
@@ -31,22 +31,22 @@ function openModal(id) {
   openModal('messageModal');
 }
 
-  // ✅ Close message modal only (keeps the form modal open)
-  function closeMessageModal() {
-    closeModal('messageModal');
-  }
+// ✅ Close message modal only (keeps the form modal open)
+function closeMessageModal() {
+  closeModal('messageModal');
+}
 
-  // Close modal when clicking outside (for all except the inner message)
-  window.onclick = function(event) {
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-      if (event.target === modal && modal.id !== 'messageModal') {
-        modal.style.display = 'none';
-      }
-    });
-  };
+// Close modal when clicking outside (for all except the inner message)
+window.onclick = function(event) {
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    if (event.target === modal && modal.id !== 'messageModal') {
+      modal.style.display = 'none';
+    }
+  });
+};
 
-  function updateStatus(id, status) {
+function updateStatus(id, status) {
   if (confirm("Are you sure you want to approve this user?")) {
     fetch('update_user.php', {
       method: 'POST',
@@ -104,3 +104,55 @@ function updateRequestStatus(r_id, status) {
   }
 }
 
+/* ================================================================
+   ✅ NEW SECTION: Navigation Toggle (Dashboard <-> Announcements)
+================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  const navLinks = document.querySelectorAll('.nav a');
+  let dashboardLink = null;
+  let announcementsLink = null;
+  const dashboardSection = document.querySelector('.dashboard');
+  const announcementsSection = document.getElementById('announcementsSection');
+
+  // identify links by their text content
+  navLinks.forEach(link => {
+    const text = link.textContent.trim().toLowerCase();
+    if (text === 'dashboard') dashboardLink = link;
+    if (text === 'announcements') announcementsLink = link;
+  });
+
+  // show dashboard section
+  function showDashboard() {
+    if (dashboardSection) dashboardSection.style.display = 'block';
+    if (announcementsSection) announcementsSection.style.display = 'none';
+  }
+
+  // show announcements section
+  function showAnnouncements() {
+    if (dashboardSection) dashboardSection.style.display = 'none';
+    if (announcementsSection) announcementsSection.style.display = 'block';
+  }
+
+  // toggle active class on nav links
+  function setActiveLink(activeLink) {
+    navLinks.forEach(link => link.classList.remove('active'));
+    activeLink.classList.add('active');
+  }
+
+  // event listeners
+  if (dashboardLink) {
+    dashboardLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      showDashboard();
+      setActiveLink(dashboardLink);
+    });
+  }
+
+  if (announcementsLink) {
+    announcementsLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      showAnnouncements();
+      setActiveLink(announcementsLink);
+    });
+  }
+});

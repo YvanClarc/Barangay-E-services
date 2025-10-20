@@ -65,12 +65,13 @@ if (isset($_POST['login'])) {
         $_SESSION['user_role'] = $user['role'];
 
         if ($user['role'] === 'official') {
-            header("Location: official_dashboard.php");
+            header("Location: users/admin/official_dashboard.php");
         } else if ($user['role'] === 'Staff') {
-            header("Location: staff_dashboard.php");
+            header("Location: users/staff/staff_dashboard.php");
         } else {
-            header("Location: user_dashboard.php");
+            header("Location: users/user/user_dashboard.php");
         }
+
         exit();
     } else {
         // ✅ Wrong password

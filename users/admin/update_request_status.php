@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'config.php';
+require '../../config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['r_id'], $_POST['status'])) {
     $r_id = intval($_POST['r_id']);

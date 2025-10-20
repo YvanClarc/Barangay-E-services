@@ -1,7 +1,6 @@
 <?php
-// filepath: e:\xampp\htdocs\HTML-CSS-PHP-projects\Barangay E-services\add_request.php
 session_start();
-require_once 'config.php';
+require_once '../../config.php';
 
 // Make sure the user is logged in and has an ID in session
 if (!isset($_SESSION['user_id'])) {

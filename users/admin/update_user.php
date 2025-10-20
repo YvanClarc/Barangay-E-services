@@ -1,5 +1,5 @@
 <?php
-require 'config.php'; // make sure this connects to your database
+require '../../config.php'; // make sure this connects to your database
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id = $_POST['id'] ?? null;

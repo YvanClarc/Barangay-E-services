@@ -1,10 +1,10 @@
 <?php
 session_start();
-require_once 'config.php';
+require_once '../../config.php';
 
 // Make sure user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: ../../login.php");
     exit();
 }
 $user_id = $_SESSION['user_id'];
@@ -13,6 +13,7 @@ $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("SELECT * FROM tbl_requests WHERE id = ? ORDER BY r_id DESC");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
+
 $result = $stmt->get_result();
 
 $requests = [];
@@ -20,7 +21,8 @@ while ($row = $result->fetch_assoc()) {
     $requests[] = $row;
 }
 $total_requests = count($requests);
-$stmt->close(); 
+$stmt->close();
+ 
 
 $pending_count = 0;
 $completed_count = 0;
@@ -37,8 +39,8 @@ foreach ($requests as $req) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>User Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles/Official_dashboard.css" />
-  <link rel="stylesheet" href="styles/User_dashboard.css" />
+  <link rel="stylesheet" href="../../styles/Official_dashboard.css" />
+  <link rel="stylesheet" href="../../styles/User_dashboard.css" />
 </head>
 
 <body>
@@ -46,7 +48,7 @@ foreach ($requests as $req) {
     <!-- Sidebar -->
     <div class="sidebar">
       <div class="logo-section">
-        <img src="images/ivan.png" alt="Barangay Logo" />
+        <img src="../../images/ivan.png" alt="Barangay Logo" />
         <h2>Barangay<br>E-Services and Complaint Management System</h2>
       </div>
 
@@ -64,7 +66,7 @@ foreach ($requests as $req) {
     <div class="main">
       <div class="topbar">
         <span class="admin">USER</span>
-        <img src="images/ivan.png" alt="User Icon" class="admin-icon" />
+        <img src="../../images/ivan.png" alt="User Icon" class="admin-icon" />
       </div>
 
       <div class="dashboard">
@@ -202,7 +204,7 @@ foreach ($requests as $req) {
     </div>
   </div>
 
-  <script src="scripts/user_dashboard.js"></script>
+  <script src="../../scripts/user_dashboard.js"></script>
   
 </body>
 </html>
