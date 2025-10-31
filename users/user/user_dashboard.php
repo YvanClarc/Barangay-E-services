@@ -22,8 +22,8 @@ while ($row = $result->fetch_assoc()) {
 }
 $total_requests = count($requests);
 $stmt->close();
- 
 
+// Count pending and approved
 $pending_count = 0;
 $completed_count = 0;
 foreach ($requests as $req) {
@@ -57,7 +57,6 @@ foreach ($requests as $req) {
         <a href="#">Announcements</a>
         <a href="#">Request Certificate</a>
         <a href="#">File Complaint</a>
-        <a href="#">My Requests</a>
         <a href="#">Settings</a>
       </div>
     </div>
@@ -69,7 +68,8 @@ foreach ($requests as $req) {
         <img src="../../images/ivan.png" alt="User Icon" class="admin-icon" />
       </div>
 
-      <div class="dashboard">
+      <!-- Dashboard Section -->
+      <div class="dashboard section" id="dashboardSection">
         <h1>Dashboard Overview</h1>
         <div class="cards">
           <div class="card blue">
@@ -140,6 +140,69 @@ foreach ($requests as $req) {
             </tbody>
           </table>
         </div>
+              <!-- === My Complaints Section === -->
+        <div id="myComplaintsSection" class="complaints-section" style="margin-top: 40px;">
+        <h2>My Complaints</h2>
+        <p class="subtitle">Here are the complaints you have submitted to the barangay.</p>
+        <div class="table-container">
+          <table class="complaints-table">
+            <thead>
+              <tr>
+                <th>Reference No</th>
+                <th>Complaint Type</th>
+                <th>Details</th>
+                <th>Date of Incident</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Date Filed</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                $user_id = $_SESSION['user_id'];
+                $complaints_query = $conn->prepare("
+                  SELECT reference_no, complaint_type, details, date_of_incident, location, status, date_filed 
+                  FROM tbl_complaints 
+                  WHERE user_id = ? 
+                  ORDER BY date_filed DESC
+                ");
+                $complaints_query->bind_param("i", $user_id);
+                $complaints_query->execute();
+                $complaints_result = $complaints_query->get_result();
+
+                if ($complaints_result->num_rows > 0) {
+                    while ($row = $complaints_result->fetch_assoc()) {
+                        $reference_no = htmlspecialchars($row['reference_no']);
+                        $complaint_type = htmlspecialchars($row['complaint_type']);
+                        $details = htmlspecialchars($row['details']);
+                        $date_incident = htmlspecialchars($row['date_of_incident']);
+                        $location = htmlspecialchars($row['location']);
+                        $status = htmlspecialchars($row['status']);
+                        $date_filed = date('M d, Y h:i A', strtotime($row['date_filed']));
+                        $status_class = strtolower(str_replace(' ', '-', $status));
+
+                        echo "
+                          <tr>
+                            <td>{$reference_no}</td>
+                            <td>{$complaint_type}</td>
+                            <td>{$details}</td>
+                            <td>{$date_incident}</td>
+                            <td>{$location}</td>
+                            <td><span class='status-badge {$status_class}'>{$status}</span></td>
+                            <td>{$date_filed}</td>
+                          </tr>
+                        ";
+                    }
+                } else {
+                    echo "<tr><td colspan='7' style='text-align:center; color:#777;'>No complaints filed yet.</td></tr>";
+                }
+
+                $complaints_query->close();
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
       </div>
 
       <!-- Request Certificate Section -->
@@ -201,10 +264,45 @@ foreach ($requests as $req) {
           <button type="button" class="add-request-btn" style="background:#e74c3c;margin-left:10px;" onclick="showDashboardSection()">Cancel</button>
         </form>
       </div>
+
+      <!-- File Complaint Section -->
+      <div class="file-complaint-section section" id="fileComplaintSection" style="display:none;">
+        <h2>File a Complaint</h2>
+        <form method="POST" action="add_complaint.php" class="complaint-form">
+
+          <div class="form-group">
+            <label for="complaint_type">Complaint Type:</label>
+            <select name="complaint_type" id="complaint_type" required>
+              <option value="">Select Complaint Type</option>
+              <option value="Noise Disturbance">Noise Disturbance</option>
+              <option value="Garbage Problem">Garbage Problem</option>
+              <option value="Conflict with Neighbor">Conflict with Neighbor</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="complaint_details">Details:</label>
+            <textarea name="complaint_details" id="complaint_details" placeholder="Describe your complaint..." rows="5" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="complaint_date">Date of Incident:</label>
+            <input type="date" name="complaint_date" id="complaint_date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="complaint_location">Location:</label>
+            <input type="text" name="complaint_location" id="complaint_location" placeholder="Enter location" required>
+          </div>
+
+          <button type="submit" class="add-request-btn">Submit Complaint</button>
+          <button type="button" class="add-request-btn cancel-btn" onclick="showDashboardSection()">Cancel</button>
+        </form>
+      </div>
     </div>
   </div>
 
   <script src="../../scripts/user_dashboard.js"></script>
-  
 </body>
 </html>

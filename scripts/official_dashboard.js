@@ -9,7 +9,7 @@ function closeModal(id) {
   document.getElementById(id).style.display = 'none';
 }
 
-// ✅ NEW FUNCTION: Show success/error message modal
+// Show success/error message modal
 function showMessage(status, text) {
   const modal = document.getElementById('messageModal');
   const title = document.getElementById('messageTitle');
@@ -104,55 +104,20 @@ function updateRequestStatus(r_id, status) {
   }
 }
 
-/* ================================================================
-   ✅ NEW SECTION: Navigation Toggle (Dashboard <-> Announcements)
-================================================================ */
-document.addEventListener('DOMContentLoaded', function() {
-  const navLinks = document.querySelectorAll('.nav a');
-  let dashboardLink = null;
-  let announcementsLink = null;
-  const dashboardSection = document.querySelector('.dashboard');
-  const announcementsSection = document.getElementById('announcementsSection');
+function updateComplaintStatus(c_id, newStatus) {
+  if (!confirm(`Are you sure you want to mark this complaint as "${newStatus}"?`)) return;
 
-  // identify links by their text content
-  navLinks.forEach(link => {
-    const text = link.textContent.trim().toLowerCase();
-    if (text === 'dashboard') dashboardLink = link;
-    if (text === 'announcements') announcementsLink = link;
+  fetch('update_complaint_status.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `c_id=${encodeURIComponent(c_id)}&status=${encodeURIComponent(newStatus)}`
+  })
+  .then(res => res.text())
+  .then(response => {
+    alert(response);
+    location.reload();
+  })
+  .catch(err => {
+    alert('Error updating complaint: ' + err);
   });
-
-  // show dashboard section
-  function showDashboard() {
-    if (dashboardSection) dashboardSection.style.display = 'block';
-    if (announcementsSection) announcementsSection.style.display = 'none';
-  }
-
-  // show announcements section
-  function showAnnouncements() {
-    if (dashboardSection) dashboardSection.style.display = 'none';
-    if (announcementsSection) announcementsSection.style.display = 'block';
-  }
-
-  // toggle active class on nav links
-  function setActiveLink(activeLink) {
-    navLinks.forEach(link => link.classList.remove('active'));
-    activeLink.classList.add('active');
-  }
-
-  // event listeners
-  if (dashboardLink) {
-    dashboardLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      showDashboard();
-      setActiveLink(dashboardLink);
-    });
-  }
-
-  if (announcementsLink) {
-    announcementsLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      showAnnouncements();
-      setActiveLink(announcementsLink);
-    });
-  }
-});
+}

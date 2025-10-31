@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../../config.php'; // correct PHP include
+require_once __DIR__ . '/../../config.php';
 
 // === COUNT USERS ===
 $user_count = 0;
@@ -16,6 +16,13 @@ if ($result = $conn->query($cert_query)) {
   $cert_count = $result->fetch_assoc()['total_certificates'] ?? 0;
 }
 
+// === COUNT COMPLAINTS ===
+$complaint_count = 0;
+$complaint_query = "SELECT COUNT(*) AS total_complaints FROM tbl_complaints";
+if ($result = $conn->query($complaint_query)) {
+  $complaint_count = $result->fetch_assoc()['total_complaints'] ?? 0;
+}
+
 // === FETCH USERS ===
 $users_query = "SELECT id, first_name, last_name, email, role, account_status 
                 FROM tbl_users ORDER BY id DESC";
@@ -28,7 +35,17 @@ $requests_query = "SELECT r.r_id, r.first_name, r.last_name, r.document_type, r.
                    LEFT JOIN tbl_users u ON r.id = u.id
                    ORDER BY r.r_id DESC";
 $requests_result = $conn->query($requests_query);
+
+// === FETCH COMPLAINTS ===
+$complaints_query = "SELECT c.c_id, c.reference_no, c.complaint_type, c.details, 
+                            c.date_of_incident, c.location, c.status, c.date_filed,
+                            u.first_name, u.last_name, u.email
+                     FROM tbl_complaints c
+                     LEFT JOIN tbl_users u ON c.user_id = u.id
+                     ORDER BY c.date_filed DESC";
+$complaints_result = $conn->query($complaints_query);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,7 +109,7 @@ $requests_result = $conn->query($requests_query);
           </div>
           <div class="card green">
             <p>Total Complaints Filed</p>
-            <span>0</span>
+            <span><?= htmlspecialchars($complaint_count) ?></span>
           </div>
         </div>
 
@@ -202,6 +219,64 @@ $requests_result = $conn->query($requests_query);
             </tbody>
           </table>
         </section>
+
+        <!-- COMPLAINTS MONITORING -->
+      <section class="users-section complaints-section">
+        <div class="users-header">
+          <h2>Filed Complaints</h2>
+        </div>
+
+        <table class="user-table" id="complaintsTable">
+          <thead>
+            <tr>
+              <th>Complaint ID</th>
+              <th>Reference No</th>
+              <th>Complainant</th>
+              <th>Email</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Date of Incident</th>
+              <th>Status</th>
+              <th>Date Filed</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if ($complaints_result && $complaints_result->num_rows > 0): ?>
+              <?php while ($comp = $complaints_result->fetch_assoc()): ?>
+                <tr>
+                  <td><?= htmlspecialchars($comp['c_id']) ?></td>
+                  <td><?= htmlspecialchars($comp['reference_no']) ?></td>
+                  <td><?= htmlspecialchars($comp['first_name'] . ' ' . $comp['last_name']) ?></td>
+                  <td><?= htmlspecialchars($comp['email']) ?></td>
+                  <td><?= htmlspecialchars($comp['complaint_type']) ?></td>
+                  <td><?= htmlspecialchars($comp['location']) ?></td>
+                  <td><?= htmlspecialchars($comp['date_of_incident']) ?></td>
+                  <td>
+                    <span class="status 
+                      <?= strtolower($comp['status']) === 'pending' ? 'pending' : 
+                        (strtolower($comp['status']) === 'resolved' ? 'active' : 'denied') ?>">
+                      <?= ucfirst(htmlspecialchars($comp['status'])) ?>
+                    </span>
+                  </td>
+                  <td><?= htmlspecialchars($comp['date_filed']) ?></td>
+                  <td>
+                    <?php if (strtolower($comp['status']) === 'pending'): ?>
+                      <button class="approve-btn" onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Resolved')">Resolve</button>
+                      <button class="deny-btn" onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Dismissed')">Dismiss</button>
+                    <?php else: ?>
+                      <span style="color:#888;">No action</span>
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              <?php endwhile; ?>
+            <?php else: ?>
+              <tr><td colspan="10" style="text-align:center;">No complaints filed yet.</td></tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </section>
+
       </section>
     </main>
   </div>
