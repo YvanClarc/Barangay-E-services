@@ -96,3 +96,11 @@ function editRequest(r_id) {
       document.querySelector('.request-form button[type="submit"]').textContent = "Update Request";
     });
 }
+
+function logout(confirmMsg = 'Are you sure you want to log out?') {
+  if (!confirm(confirmMsg)) return;
+  // if page is inside /users/... go up two levels to project root, otherwise use root path
+  const path = window.location.pathname.toLowerCase();
+  const logoutPath = path.includes('/users/') ? '../../logout.php' : 'logout.php';
+  window.location.href = logoutPath;
+}
