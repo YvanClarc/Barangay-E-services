@@ -64,7 +64,7 @@ $complaints_result = $conn->query($complaints_query);
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="logo-section">
-        <img src="../../images/ivan.png" alt="Barangay Logo">
+        <img src="../../images/logo.png" alt="Barangay Logo">
         <h2>BARANGAY E-SERVICES<br>AND COMPLAINT<br>MANAGEMENT SYSTEM</h2>
       </div>
       <nav class="nav">

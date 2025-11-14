@@ -1,0 +1,172 @@
+/* ============================= */
+/* 📄 SERVICE PAGE STYLES */
+/* ============================= */
+.service-page {
+  padding: 60px 20px;
+  background: #f4f6fa;
+  min-height: calc(100vh - 200px);
+}
+
+.service-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.service-icon-large {
+  font-size: 5rem;
+  margin-bottom: 20px;
+}
+
+.service-header h1 {
+  font-size: 2.5rem;
+  color: #1e3d8f;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.service-description {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.service-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.content-card {
+  background: white;
+  padding: 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 25px;
+  transition: all 0.3s ease;
+}
+
+.content-card:hover {
+  box-shadow: 0 6px 20px rgba(30, 61, 143, 0.12);
+  transform: translateY(-2px);
+}
+
+.content-card h2 {
+  color: #1e3d8f;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.content-card p {
+  color: #555;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.requirements-list,
+.steps-list {
+  margin-left: 20px;
+  color: #555;
+  line-height: 2;
+}
+
+.requirements-list li,
+.steps-list li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.requirements-list li {
+  list-style-type: disc;
+}
+
+.steps-list li {
+  list-style-type: decimal;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+  padding: 14px 35px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.action-buttons .btn-primary {
+  background: linear-gradient(135deg, #1e3d8f, #274fb8);
+  color: white;
+}
+
+.action-buttons .btn-primary:hover {
+  background: linear-gradient(135deg, #17306c, #1e3d8f);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(30, 61, 143, 0.3);
+}
+
+.action-buttons .btn-secondary {
+  background: white;
+  color: #1e3d8f;
+  border: 2px solid #1e3d8f;
+}
+
+.action-buttons .btn-secondary:hover {
+  background: #1e3d8f;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* ============================= */
+/* 📱 RESPONSIVE DESIGN */
+/* ============================= */
+@media (max-width: 768px) {
+  .service-header h1 {
+    font-size: 2rem;
+  }
+
+  .service-description {
+    font-size: 1rem;
+  }
+
+  .content-card {
+    padding: 25px;
+  }
+
+  .content-card h2 {
+    font-size: 1.3rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-icon-large {
+    font-size: 3.5rem;
+  }
+
+  .service-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .content-card {
+    padding: 20px;
+  }
+}
+
