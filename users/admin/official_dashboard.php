@@ -93,11 +93,7 @@ $announcements_result = $conn->query($announcements_query);
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="logo-section">
-<<<<<<< HEAD
         <img src="../../images/logo.png" alt="Barangay Logo">
-=======
-        <img src="../../images/ivan.png" alt="Logo">
->>>>>>> 0cc6017d840f8380fb8f0e05793df521f58678d0
         <h2>BARANGAY E-SERVICES<br>AND COMPLAINT<br>MANAGEMENT SYSTEM</h2>
       </div>
 

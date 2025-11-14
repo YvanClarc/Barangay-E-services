@@ -1,21 +1,22 @@
 function showRequestCertificateSection() {
-  document.querySelector('.dashboard').style.display = 'none';
-  document.getElementById('requestCertificateSection').style.display = 'block';
-  document.getElementById('fileComplaintSection').style.display = 'none';
+  showSectionById('requestCertificateSection');
 }
 
 function showFileComplaintSection() {
-  document.querySelector('.dashboard').style.display = 'none';
-  document.getElementById('requestCertificateSection').style.display = 'none';
-  document.getElementById('fileComplaintSection').style.display = 'block';
+  showSectionById('fileComplaintSection');
   resetComplaintForm();
 }
 
 function showDashboardSection() {
-  document.querySelector('.dashboard').style.display = 'block';
-  document.getElementById('requestCertificateSection').style.display = 'none';
-  document.getElementById('fileComplaintSection').style.display = 'none';
+  showSectionById('dashboardSection');
   resetRequestForm();
+}
+
+// Show only the section with the given id; hide all others to prevent overlap
+function showSectionById(id){
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  const target = document.getElementById(id);
+  if (target) target.style.display = 'block';
 }
 
 function resetRequestForm() {
@@ -30,20 +31,21 @@ function resetComplaintForm() {
 
 document.addEventListener('DOMContentLoaded', function() {
   var navLinks = document.querySelectorAll('.nav a');
-  if (navLinks.length >= 4) {
-    navLinks[2].addEventListener('click', function(e) { // Request Certificate
-      e.preventDefault();
-      showRequestCertificateSection();
-    });
+  if (navLinks.length) {
+    navLinks.forEach((link, idx) => {
+      link.addEventListener('click', function(e){
+        e.preventDefault();
+        // set active class
+        navLinks.forEach(l=>l.classList.remove('active'));
+        this.classList.add('active');
 
-    navLinks[3].addEventListener('click', function(e) { // File Complaint
-      e.preventDefault();
-      showFileComplaintSection();
-    });
-
-    navLinks[0].addEventListener('click', function(e) { // Dashboard
-      e.preventDefault();
-      showDashboardSection();
+        // map indexes to section ids (keeps existing order)
+        if (idx === 0) showSectionById('dashboardSection');
+        else if (idx === 1) showSectionById('announcementsSection');
+        else if (idx === 2) showSectionById('requestCertificateSection');
+        else if (idx === 3) showSectionById('fileComplaintSection');
+        else if (idx === 4) showSectionById('settingsSection');
+      });
     });
   }
 });

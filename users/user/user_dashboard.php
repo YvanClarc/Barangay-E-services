@@ -30,6 +30,20 @@ foreach ($requests as $req) {
     if ($req['r_status'] === 'pending') $pending_count++;
     if ($req['r_status'] === 'approved') $completed_count++;
 }
+
+// Fetch recent published announcements (most recent first, limit 5)
+$ann_stmt = $conn->prepare("SELECT ann_id, title, details, image_path, created_at FROM tbl_announcements WHERE status = 'published' ORDER BY created_at DESC LIMIT 5");
+if ($ann_stmt) {
+  $ann_stmt->execute();
+  $ann_res = $ann_stmt->get_result();
+  $announcements = [];
+  while ($r = $ann_res->fetch_assoc()) {
+    $announcements[] = $r;
+  }
+  $ann_stmt->close();
+} else {
+  $announcements = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -66,6 +80,7 @@ foreach ($requests as $req) {
       <div class="topbar">
         <span class="admin">USER</span>
         <img src="../../images/ivan.png" alt="User Icon" class="admin-icon" />
+        <button id="logoutBtn" class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
       </div>
 
       <!-- Dashboard Section -->
@@ -265,6 +280,33 @@ foreach ($requests as $req) {
         </form>
       </div>
 
+      <!-- ANNOUNCEMENTS SECTION (user) -->
+      <div id="announcementsSection" class="section" style="display:none; margin-top:18px;">
+        <h2>Announcements</h2>
+        <p class="subtitle">Latest published announcements from the admin.</p>
+        <?php if (!empty($announcements)): ?>
+          <div class="postcards-container">
+            <?php foreach ($announcements as $a): ?>
+              <div class="postcard">
+                <?php if (!empty($a['image_path']) && file_exists(__DIR__ . '/../../' . $a['image_path'])): ?>
+                  <div class="postcard-media"><img src="../../<?= htmlspecialchars($a['image_path']) ?>" alt="announcement image" onclick="previewImage('../../<?= htmlspecialchars($a['image_path']) ?>')"></div>
+                <?php else: ?>
+                  <div class="postcard-media"><img src="../../images/ivan.png" alt="placeholder"></div>
+                <?php endif; ?>
+                <div class="postcard-body">
+                  <h3 class="postcard-title"><?= htmlspecialchars($a['title']) ?></h3>
+                  <p class="postcard-text"><?= htmlspecialchars($a['details']) ?></p>
+                  <div class="postcard-meta">
+                    <span><?= date('M d, Y', strtotime($a['created_at'])) ?></span>
+                  </div>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <p class="no-announcements">No announcements published yet.</p>
+        <?php endif; ?>
+      </div>
       <!-- File Complaint Section -->
       <div class="file-complaint-section section" id="fileComplaintSection" style="display:none;">
         <h2>File a Complaint</h2>
