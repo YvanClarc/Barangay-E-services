@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2025 at 06:52 PM
+-- Generation Time: Nov 17, 2025 at 09:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,7 +42,9 @@ CREATE TABLE `tbl_announcements` (
 --
 
 INSERT INTO `tbl_announcements` (`ann_id`, `title`, `details`, `image_path`, `status`, `created_at`, `created_by`) VALUES
-(5, 'wasddasdad', 'adasdadsda', 'uploads/announcements/ann_1763138574_601496856e9d.jpg', 'published', '2025-11-14 17:42:54', 1);
+(5, 'wasddasdad', 'adasdadsda', 'uploads/announcements/ann_1763138574_601496856e9d.jpg', 'published', '2025-11-14 17:42:54', 1),
+(6, 'Free Circumcision', 'The Barangay Guindaruhan offer free circumcision for the youth.', 'uploads/announcements/ann_1763364222_01423a99eccf.jpg', 'published', '2025-11-17 08:23:42', 1),
+(7, 'wdasdada', 'dasdasdadasdasdasdadasds', 'uploads/announcements/ann_1763367073_be20d892d52b.jpg', 'published', '2025-11-17 09:11:13', 1);
 
 -- --------------------------------------------------------
 
@@ -69,7 +71,11 @@ CREATE TABLE `tbl_complaints` (
 INSERT INTO `tbl_complaints` (`c_id`, `user_id`, `reference_no`, `complaint_type`, `details`, `date_of_incident`, `location`, `status`, `date_filed`) VALUES
 (1, 1, 'CMP-68F5D4544A4F1', 'Noise Disturbance', 'Saba kaayo sig videoke diri tunga sa gabie', '2025-10-20', 'purok gemelina', 'Resolved', '2025-10-20 14:19:00'),
 (2, 2, 'CMP-6901A04944DE8', 'Garbage Problem', 'aray ko', '2025-10-29', 'cavite', 'Resolved', '2025-10-29 13:04:09'),
-(3, 2, 'CMP-69176AA1D2D93', 'Noise Disturbance', 'adasdadsadsad', '2025-11-15', 'purok gemelina', 'Dismissed', '2025-11-15 01:45:05');
+(3, 2, 'CMP-69176AA1D2D93', 'Noise Disturbance', 'adasdadsadsad', '2025-11-15', 'purok gemelina', 'Dismissed', '2025-11-15 01:45:05'),
+(4, 2, 'CMP-691AA33E6756A', 'Noise Disturbance', 'wasdadadadasdadsadasdasd', '2025-11-17', 'purok gemelina', 'Dismissed', '2025-11-17 12:23:26'),
+(5, 2, 'CMP-691ACB596436D', 'Noise Disturbance', 'naa didto ah', '2025-11-17', 'purok gemelina', 'Dismissed', '2025-11-17 15:14:33'),
+(6, 2, 'CMP-691AD06344F05', 'Garbage Problem', 'dlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldladlkaldasldla', '2025-11-17', 'purok gemelina', 'Pending', '2025-11-17 15:36:03'),
+(7, 2, 'CMP-691AD8EA4BB5A', 'Noise Disturbance', 'wdadadasdwdadadasdwdadadasdwdadadasdwdadadasdwdadadasdwdadadasd', '2025-11-17', 'purok gemelina', 'Pending', '2025-11-17 16:12:26');
 
 -- --------------------------------------------------------
 
@@ -102,7 +108,14 @@ INSERT INTO `tbl_requests` (`r_id`, `id`, `first_name`, `second_name`, `last_nam
 (3, 1, 'Ivan', 'clark', 'Yonzon', 'Male', 20, 'purok gemelina', 'yonzonivanclark@gmail.com', 'Business Permit', 'wa ra gud', 'approved', '2025-10-13 07:05:03'),
 (5, 1, 'wdasdasda', 'wasdsada', 'wasdasda', 'Male', 20, 'purok gemelina', 'yonzonivanclark@gmail.com', 'Barangay Certificate', 'wa ra gud', 'denied', '2025-10-16 04:49:07'),
 (6, 1, 'Ivan', 'clark', 'Yonzon', 'Male', 20, 'purok gemelina', 'yonzonivanclark@gmail.com', 'Business Permit', 'wasd', 'approved', '2025-10-18 07:07:50'),
-(12, 2, 'Ivan', 'clark', 'Yonzon', 'Male', 20, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'wa ra gud', 'approved', '2025-11-14 16:28:51');
+(12, 2, 'Ivan', 'clark', 'Yonzon', 'Male', 20, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'wa ra gud', 'approved', '2025-11-14 16:28:51'),
+(15, 2, 'Ivan', '', 'Yonzon', 'Male', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'awdasdasdasdasdas', 'approved', '2025-11-17 05:21:24'),
+(16, 2, 'Ivan', 'clark', 'jeky', 'Male', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Indigency', 'wa ra gud', 'approved', '2025-11-17 07:38:02'),
+(17, 2, 'Ivan', 'clark', '123', 'Male', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Business Permit', 'business', 'approved', '2025-11-17 08:12:52'),
+(18, 2, 'Ivan', 'clark', 'wdadasd', 'Male', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'wadsdadasdadadsasdasd', 'approved', '2025-11-17 08:35:18'),
+(19, 2, 'Ivan', 'clark', 'Yonzon', 'Female', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'wa ra gud', 'pending', '2025-11-17 08:35:34'),
+(20, 2, 'Ivan', 'clark', 'Yonzon', 'Male', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Barangay Certificate', 'wa ra gud', 'pending', '2025-11-17 09:11:46'),
+(21, 2, 'Ivan', 'clark', 'Yonzon', 'Female', 22, 'purok gemelina', 'legacykrung@gmail.com', 'Business Permit', 'wa ra gud', 'pending', '2025-11-17 09:12:04');
 
 -- --------------------------------------------------------
 
@@ -128,8 +141,8 @@ CREATE TABLE `tbl_users` (
 
 INSERT INTO `tbl_users` (`id`, `first_name`, `last_name`, `birth_date`, `gender`, `email`, `password`, `role`, `account_status`) VALUES
 (1, 'Ivan', 'Yonzon', '2025-10-01', 'Male', 'yonzonivanclark@gmail.com', '$2y$10$TW4lKIIDK9z3bCyKHpm1suq1McL0fwSnweWJ21pbEWY3FbDljoggC', 'official', 'active'),
-(2, 'dae', 'Yonzon', '2025-10-29', 'Female', 'legacykrung@gmail.com', '$2y$10$fy9T9hxBlMdryMgdNWXwCOi6sKQi9mpwzOXLmdSi/I2rgMrvXp8ay', 'resident', 'active'),
-(16, 'Ivan', 'Yonzon', '2025-11-15', 'Male', 'godofchaos413@gmail.com', '$2y$10$kRF.kADWGdZkDM5EnBXVb.x6zSGXzriAdxIDA1vWUdr.hhbSosmYW', 'user', 'active');
+(2, 'eheys', 'Yonzon', '2025-10-29', 'Female', 'legacykrung@gmail.com', '$2y$10$fy9T9hxBlMdryMgdNWXwCOi6sKQi9mpwzOXLmdSi/I2rgMrvXp8ay', 'resident', 'active'),
+(21, 'Ivan', 'Yonzon', '2025-11-17', 'Male', 'dasdasda@gmail.com', '$2y$10$m43Y8HyqAIQE3TnGhOYDI.5I0CM1PVw0ppolUgdZ49v11tZ5Td/hi', 'user', 'active');
 
 --
 -- Indexes for dumped tables
@@ -172,25 +185,25 @@ ALTER TABLE `tbl_users`
 -- AUTO_INCREMENT for table `tbl_announcements`
 --
 ALTER TABLE `tbl_announcements`
-  MODIFY `ann_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ann_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_complaints`
 --
 ALTER TABLE `tbl_complaints`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `tbl_requests`
 --
 ALTER TABLE `tbl_requests`
-  MODIFY `r_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `r_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `tbl_users`
 --
 ALTER TABLE `tbl_users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables
