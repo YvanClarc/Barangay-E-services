@@ -20,13 +20,129 @@ function showSectionById(id){
 }
 
 function resetRequestForm() {
-  const form = document.querySelector('#requestCertificateSection .request-form');
-  if (form) form.reset();
+  const form = document.querySelector('#certificateRequestForm');
+  if (form) {
+    form.reset();
+    // Clear any validation states
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      input.style.borderColor = '#e9ecef';
+      input.style.boxShadow = 'none';
+      input.style.transform = 'none';
+    });
+  }
 }
 
 function resetComplaintForm() {
-  const form = document.querySelector('#fileComplaintSection .complaint-form');
-  if (form) form.reset();
+  const form = document.querySelector('#complaintForm');
+  if (form) {
+    form.reset();
+    // Clear any validation states
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+      input.style.borderColor = '#e9ecef';
+      input.style.boxShadow = 'none';
+      input.style.transform = 'none';
+    });
+  }
+}
+
+// User Requests Management Functions
+let currentRequestPage = 1;
+const itemsPerPageRequests = 10;
+let allUserRequests = [];
+
+function loadUserRequests() {
+  const rows = Array.from(document.querySelectorAll('#userTable tbody tr'));
+  allUserRequests = rows.map(row => ({
+    element: row,
+    status: row.dataset.status
+  }));
+  renderRequestPage(1);
+}
+
+function filterUserRequests() {
+  const statusFilter = document.getElementById('requestStatusFilter').value;
+
+  allUserRequests.forEach(request => {
+    const statusMatch = !statusFilter || request.status === statusFilter;
+    request.element.style.display = statusMatch ? '' : 'none';
+  });
+
+  currentRequestPage = 1;
+  renderRequestPage(currentRequestPage);
+}
+
+function renderRequestPage(page) {
+  const start = (page - 1) * itemsPerPageRequests;
+  const end = start + itemsPerPageRequests;
+  let visibleCount = 0;
+
+  allUserRequests.forEach((request, index) => {
+    if (request.element.style.display !== 'none') {
+      request.element.style.display = (visibleCount >= start && visibleCount < end) ? '' : 'none';
+      visibleCount++;
+    }
+  });
+
+  const totalPages = Math.ceil(visibleCount / itemsPerPageRequests);
+  document.getElementById('requestPageInfo').textContent = `Page ${page} of ${totalPages}`;
+  document.getElementById('requestPrevPage').disabled = page === 1;
+  document.getElementById('requestNextPage').disabled = page === totalPages;
+}
+
+function changeRequestPage(direction) {
+  currentRequestPage += direction;
+  renderRequestPage(currentRequestPage);
+}
+
+// User Complaints Management Functions
+let currentComplaintPage = 1;
+const itemsPerPageComplaints = 10;
+let allUserComplaints = [];
+
+function loadUserComplaints() {
+  const rows = Array.from(document.querySelectorAll('#complaintsTable tbody tr'));
+  allUserComplaints = rows.map(row => ({
+    element: row,
+    status: row.dataset.status
+  }));
+  renderComplaintPage(1);
+}
+
+function filterUserComplaints() {
+  const statusFilter = document.getElementById('complaintStatusFilter').value;
+
+  allUserComplaints.forEach(complaint => {
+    const statusMatch = !statusFilter || complaint.status === statusFilter;
+    complaint.element.style.display = statusMatch ? '' : 'none';
+  });
+
+  currentComplaintPage = 1;
+  renderComplaintPage(currentComplaintPage);
+}
+
+function renderComplaintPage(page) {
+  const start = (page - 1) * itemsPerPageComplaints;
+  const end = start + itemsPerPageComplaints;
+  let visibleCount = 0;
+
+  allUserComplaints.forEach((complaint, index) => {
+    if (complaint.element.style.display !== 'none') {
+      complaint.element.style.display = (visibleCount >= start && visibleCount < end) ? '' : 'none';
+      visibleCount++;
+    }
+  });
+
+  const totalPages = Math.ceil(visibleCount / itemsPerPageComplaints);
+  document.getElementById('complaintPageInfo').textContent = `Page ${page} of ${totalPages}`;
+  document.getElementById('complaintPrevPage').disabled = page === 1;
+  document.getElementById('complaintNextPage').disabled = page === totalPages;
+}
+
+function changeComplaintPage(direction) {
+  currentComplaintPage += direction;
+  renderComplaintPage(currentComplaintPage);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -48,7 +164,15 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
+
+
+
+// Initialize user dashboard features
+loadUserRequests();
+loadUserComplaints();
 });
+
+
 
 // Delete request
 function deleteRequest(r_id) {
