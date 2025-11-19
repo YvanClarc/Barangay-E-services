@@ -160,6 +160,8 @@ if ($ann_stmt) {
                     <?php if ($req['r_status'] === 'pending'): ?>
                       <button class="action-btn edit-btn" onclick="editRequest(<?= $req['r_id'] ?>)"><i class="fas fa-edit"></i> Edit</button>
                       <button class="action-btn delete-btn" onclick="deleteRequest(<?= $req['r_id'] ?>)"><i class="fas fa-trash"></i> Delete</button>
+                    <?php elseif ($req['r_status'] === 'approved' && !empty($req['pickup_datetime'])): ?>
+                      <button class="action-btn view-btn" onclick="viewPickupDetails(<?= $req['r_id'] ?>)"><i class="fas fa-eye"></i> View Pickup</button>
                     <?php else: ?>
                       <span style="color:#888;font-size:12px;">Completed</span>
                     <?php endif; ?>
@@ -478,6 +480,20 @@ if ($ann_stmt) {
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW PICKUP MODAL -->
+  <div id="viewPickupModal" class="modal">
+    <div class="modal-content" style="max-width:600px">
+      <span class="close-btn" onclick="closeModal('viewPickupModal')" style="float:right;cursor:pointer">&times;</span>
+      <h3>Pickup Details</h3>
+      <div id="pickupDetails" style="line-height:1.6">
+        <!-- Pickup details will be loaded here -->
+      </div>
+      <div style="margin-top:20px;text-align:right">
+        <button onclick="closeModal('viewPickupModal')">Close</button>
       </div>
     </div>
   </div>

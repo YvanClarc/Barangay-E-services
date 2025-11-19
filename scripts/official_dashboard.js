@@ -98,10 +98,14 @@ function updateStatus(id, status) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `id=${id}&status=${status}`
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
-      showMessage('Success', 'User status updated successfully.');
-      setTimeout(() => location.reload(), 1000);
+      if (data.status === 'success') {
+        showMessage('Success', data.message);
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        showMessage('Error', data.message || 'Failed to update user.');
+      }
     })
     .catch(err => showMessage('Error', 'Failed to update user.'));
   }
@@ -115,10 +119,14 @@ function deleteUser(id) {
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body: `id=${id}`
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
-      showMessage('Success', 'User deleted successfully.');
-      setTimeout(() => location.reload(), 1000);
+      if (data.status === 'success') {
+        showMessage('Success', data.message);
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        showMessage('Error', data.message || 'Failed to delete user.');
+      }
     })
     .catch(err => showMessage('Error', 'Failed to delete user.'));
   }
@@ -221,6 +229,12 @@ function changeRequestPage(direction) {
   renderRequestPage(currentRequestPage);
 }
 
+function openScheduleModal(r_id, status) {
+  document.getElementById('schedule_r_id').value = r_id;
+  document.getElementById('scheduleForm').reset();
+  openModal('scheduleModal');
+}
+
 function updateRequestStatus(r_id, status) {
   if (confirm("Are you sure you want to " + status + " this request?")) {
     fetch('update_request_status.php', {
@@ -236,6 +250,34 @@ function updateRequestStatus(r_id, status) {
     .catch(err => showMessage('Error', 'Failed to update request.'));
   }
 }
+
+// Handle schedule form submission
+document.addEventListener('DOMContentLoaded', function() {
+  const scheduleForm = document.getElementById('scheduleForm');
+  if (scheduleForm) {
+    scheduleForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      formData.append('status', 'approved');
+
+      fetch('update_request_status.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(data => {
+        if (data.trim() === 'success') {
+          showMessage('Success', 'Request approved and scheduled successfully.');
+          closeModal('scheduleModal');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showMessage('Error', data);
+        }
+      })
+      .catch(err => showMessage('Error', 'Failed to schedule request.'));
+    });
+  }
+});
 
 
 /* ====================================================================

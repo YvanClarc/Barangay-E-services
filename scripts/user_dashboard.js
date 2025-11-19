@@ -223,10 +223,46 @@ function editRequest(r_id) {
     });
 }
 
+function viewPickupDetails(r_id) {
+  // Fetch pickup details
+  fetch('users/user/get_request.php?r_id=' + encodeURIComponent(r_id))
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('pickupDetails').innerHTML = `
+        <p><strong>Document Type:</strong> ${data.document_type}</p>
+        <p><strong>Purpose:</strong> ${data.purpose}</p>
+        <p><strong>Pickup Date & Time:</strong> ${new Date(data.pickup_datetime).toLocaleString()}</p>
+        <p><strong>Fees:</strong> PHP ${parseFloat(data.fees || 0).toFixed(2)}</p>
+        <p><strong>Instructions:</strong> ${data.instructions || 'None'}</p>
+      `;
+      openModal('viewPickupModal');
+    })
+    .catch(err => alert('Failed to load pickup details.'));
+}
+
 function logout(confirmMsg = 'Are you sure you want to log out?') {
   if (!confirm(confirmMsg)) return;
   // if page is inside /users/... go up two levels to project root, otherwise use root path
   const path = window.location.pathname.toLowerCase();
   const logoutPath = path.includes('/users/') ? '../../logout.php' : 'logout.php';
   window.location.href = logoutPath;
+}
+
+// Modal functions
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'block';
+}
+
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
 }

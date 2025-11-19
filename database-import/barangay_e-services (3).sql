@@ -96,7 +96,10 @@ CREATE TABLE `tbl_requests` (
   `document_type` varchar(255) NOT NULL,
   `purpose` varchar(255) NOT NULL,
   `r_status` varchar(255) NOT NULL,
-  `date_requested` varchar(50) NOT NULL
+  `date_requested` varchar(50) NOT NULL,
+  `pickup_datetime` datetime DEFAULT NULL,
+  `fees` decimal(10,2) DEFAULT NULL,
+  `instructions` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

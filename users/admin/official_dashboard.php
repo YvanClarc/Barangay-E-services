@@ -358,7 +358,7 @@ $announcements_result = $conn->query($announcements_query);
                     <td>
                       <button onclick="viewRequestDetails(<?= $req['r_id'] ?>)" title="View Details" style="margin-right:5px;padding:5px 8px;background:#17a2b8;color:white;border:none;border-radius:4px"><i class="fas fa-eye"></i></button>
                       <?php if ($req['r_status'] === 'pending'): ?>
-                        <button onclick="updateRequestStatus(<?= $req['r_id'] ?>, 'approved')" title="Approve" style="margin-right:5px;padding:5px 8px;background:#28a745;color:white;border:none;border-radius:4px"><i class="fas fa-check"></i></button>
+                        <button onclick="openScheduleModal(<?= $req['r_id'] ?>, 'approved')" title="Approve" style="margin-right:5px;padding:5px 8px;background:#28a745;color:white;border:none;border-radius:4px"><i class="fas fa-check"></i></button>
                         <button onclick="updateRequestStatus(<?= $req['r_id'] ?>, 'denied')" title="Deny" style="padding:5px 8px;background:#dc3545;color:white;border:none;border-radius:4px"><i class="fas fa-times"></i></button>
                       <?php else: ?>
                         <span style="color:#888;font-size:12px;">Completed</span>
@@ -744,6 +744,37 @@ $announcements_result = $conn->query($announcements_query);
       <h2 id="messageTitle">Status</h2>
       <p id="messageText" style="font-size:15px;margin:10px 0 20px"></p>
       <button onclick="closeModal('messageModal')" style="width:100px;cursor:pointer">OK</button>
+    </div>
+  </div>
+
+  <!-- SCHEDULE MODAL -->
+  <div id="scheduleModal" class="modal">
+    <div class="modal-content" style="max-width:600px">
+      <span class="close-btn" onclick="closeModal('scheduleModal')" style="float:right;cursor:pointer">&times;</span>
+      <h3>Schedule Document Pickup</h3>
+      <form id="scheduleForm">
+        <input type="hidden" id="schedule_r_id" name="r_id">
+        <div style="margin-bottom:15px">
+          <label for="pickup_date">Pickup Date:</label>
+          <input type="date" id="pickup_date" name="pickup_date" required style="width:100%;padding:8px;margin-top:5px">
+        </div>
+        <div style="margin-bottom:15px">
+          <label for="pickup_time">Pickup Time:</label>
+          <input type="time" id="pickup_time" name="pickup_time" required style="width:100%;padding:8px;margin-top:5px">
+        </div>
+        <div style="margin-bottom:15px">
+          <label for="fees">Fees to Prepare (PHP):</label>
+          <input type="number" id="fees" name="fees" step="0.01" min="0" placeholder="0.00" style="width:100%;padding:8px;margin-top:5px">
+        </div>
+        <div style="margin-bottom:15px">
+          <label for="instructions">Instructions:</label>
+          <textarea id="instructions" name="instructions" rows="4" placeholder="Any special instructions for the user..." style="width:100%;padding:8px;margin-top:5px"></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="submit" style="background:#28a745;color:white;border:none;padding:10px 20px;border-radius:4px">Approve & Schedule</button>
+          <button type="button" onclick="closeModal('scheduleModal')" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
 

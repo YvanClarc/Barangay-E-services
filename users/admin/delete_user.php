@@ -11,8 +11,8 @@ function json_response($status, $message) {
     exit();
 }
 
-// --- Security Check: Ensure user is a logged-in admin ---
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+// --- Security Check: Ensure user is a logged-in admin or official ---
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'official'])) {
     json_response('error', 'Unauthorized access.');
 }
 

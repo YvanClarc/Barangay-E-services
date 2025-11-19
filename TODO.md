@@ -1,12 +1,17 @@
-# TODO: Improve Users Handling in Official Dashboard
+# TODO: Improve Request-Handling Feature with Scheduling
 
-## Tasks
-- [x] Add edit user functionality with modal to update user details
-- [x] Add view user details modal for quick overview
-- [x] Enhance search to filter by role and status
-- [x] Add pagination for large user lists
-- [x] Include bulk actions (e.g., bulk approve/delete)
-- [x] Improve table styling with icons, colors, spacing, and hover effects
-- [x] Make layout more responsive and visually appealing
-- [x] Add status badges with colors
-- [x] Test the improved users section for functionality and design
+## Database Updates
+- [ ] Add columns to `tbl_requests`: `pickup_datetime` (DATETIME), `fees` (DECIMAL(10,2)), `instructions` (TEXT)
+
+## Backend Changes
+- [ ] Modify `users/admin/update_request_status.php` to accept scheduling details and send email notification
+
+## Frontend Changes
+- [ ] Add scheduling modal in `users/admin/official_dashboard.php`
+- [ ] Update `scripts/official_dashboard.js` to handle scheduling modal and submission
+- [ ] Update `users/user/user_dashboard.php` to display scheduling details for approved requests
+
+## Testing
+- [ ] Test approving requests with scheduling
+- [ ] Verify email notifications are sent
+- [ ] Ensure user dashboard shows pickup details
