@@ -225,7 +225,7 @@ function editRequest(r_id) {
 
 function viewPickupDetails(r_id) {
   // Fetch pickup details
-  fetch('users/user/get_request.php?r_id=' + encodeURIComponent(r_id))
+  fetch('get_request.php?r_id=' + encodeURIComponent(r_id))
     .then(res => res.json())
     .then(data => {
       document.getElementById('pickupDetails').innerHTML = `
