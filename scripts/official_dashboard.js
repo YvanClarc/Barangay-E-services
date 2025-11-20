@@ -178,6 +178,64 @@ window.onclick = function(event) {
 /* ====================================================================
    REQUEST MANAGEMENT
    ==================================================================== */
+
+// View request details
+function viewRequestDetails(r_id) {
+  // Show loading state
+  document.getElementById('requestDetails').innerHTML = `
+    <p><strong>Request ID:</strong> ${r_id}</p>
+    <p><strong>Full Name:</strong> Loading...</p>
+    <p><strong>Email:</strong> Loading...</p>
+    <p><strong>Document Type:</strong> Loading...</p>
+    <p><strong>Purpose:</strong> Loading...</p>
+    <p><strong>Status:</strong> Loading...</p>
+    <p><strong>Date Requested:</strong> Loading...</p>
+  `;
+  openModal('viewRequestModal');
+
+  // Fetch request data via AJAX
+  fetch(`get_request.php?r_id=${r_id}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const req = data.request;
+        document.getElementById('requestDetails').innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div>
+              <h4 style="margin-bottom: 10px; color: #1e3d8f;">Requestor Information</h4>
+              <p><strong>Request ID:</strong> ${req.r_id}</p>
+              <p><strong>Full Name:</strong> ${req.first_name} ${req.second_name} ${req.last_name}</p>
+              <p><strong>Gender:</strong> ${req.gender}</p>
+              <p><strong>Age:</strong> ${req.age}</p>
+              <p><strong>Address:</strong> ${req.address}</p>
+              <p><strong>Email:</strong> ${req.email}</p>
+            </div>
+            <div>
+              <h4 style="margin-bottom: 10px; color: #1e3d8f;">Request Details</h4>
+              <p><strong>Document Type:</strong> ${req.document_type}</p>
+              <p><strong>Purpose:</strong> ${req.purpose}</p>
+              <p><strong>Status:</strong> <span class="status ${req.r_status === 'pending' ? 'pending' : (req.r_status === 'approved' ? 'active' : 'denied')}">${ucfirst(req.r_status)}</span></p>
+              <p><strong>Date Requested:</strong> ${req.date_requested}</p>
+              ${req.pickup_datetime ? `<p><strong>Pickup Date/Time:</strong> ${req.pickup_datetime}</p>` : ''}
+              ${req.fees ? `<p><strong>Fees:</strong> PHP ${req.fees}</p>` : ''}
+              ${req.instructions ? `<p><strong>Instructions:</strong> ${req.instructions}</p>` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        document.getElementById('requestDetails').innerHTML = `<p style="color: red;">Error: ${data.message}</p>`;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('requestDetails').innerHTML = `<p style="color: red;">Error loading request data.</p>`;
+    });
+}
+
+// Helper function to capitalize first letter
+function ucfirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 let currentRequestPage = 1;
 const itemsPerPageRequests = 10;
 let allRequests = [];

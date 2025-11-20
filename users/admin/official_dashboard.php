@@ -738,6 +738,20 @@ $announcements_result = $conn->query($announcements_query);
     </div>
   </div>
 
+  <!-- VIEW REQUEST MODAL -->
+  <div id="viewRequestModal" class="modal">
+    <div class="modal-content" style="max-width:800px">
+      <span class="close-btn" onclick="closeModal('viewRequestModal')" style="float:right;cursor:pointer">&times;</span>
+      <h3 style="color: #1e3d8f; margin-bottom: 20px;"><i class="fas fa-file-alt"></i> Request Details</h3>
+      <div id="requestDetails" style="line-height:1.6">
+        <!-- Request details will be loaded here -->
+      </div>
+      <div style="margin-top:20px;text-align:right">
+        <button onclick="closeModal('viewRequestModal')" style="padding:10px 20px;background:#6c757d;color:white;border:none;border-radius:6px;">Close</button>
+      </div>
+    </div>
+  </div>
+
   <!-- MESSAGE MODAL -->
   <div id="messageModal" class="modal" style="background:rgba(0,0,0,0.3);z-index:1000;">
     <div class="modal-content" style="max-width:400px;text-align:center;padding:30px 20px">
