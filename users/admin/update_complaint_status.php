@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 
   // Validate status
-  $allowed_status = ['Pending', 'Resolved', 'Dismissed'];
+  $allowed_status = ['Pending', 'In-Progress', 'Resolved', 'Dismissed', 'Unresolved'];
   if (!in_array($status, $allowed_status)) {
     echo "Invalid status value.";
     exit();

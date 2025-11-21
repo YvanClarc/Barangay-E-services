@@ -410,6 +410,58 @@ function updateComplaintStatus(c_id, newStatus) {
   });
 }
 
+function scheduleHearing(c_id) {
+  // Check how many hearings already exist for this complaint
+  fetch(`get_hearing.php?c_id=${c_id}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const existingHearings = data.hearings.length;
+        if (existingHearings >= 3) {
+          showMessage('Error', 'Maximum of 3 hearings allowed per complaint.');
+          return;
+        }
+
+        // Set the next hearing number
+        const nextHearingNo = existingHearings + 1;
+        document.getElementById('hearing_no').value = nextHearingNo;
+        document.getElementById('hearing_c_id').value = c_id;
+        document.getElementById('scheduleHearingForm').reset();
+        openModal('scheduleHearingModal');
+      } else {
+        showMessage('Error', 'Failed to check existing hearings.');
+      }
+    })
+    .catch(err => showMessage('Error', 'Failed to load hearing data.'));
+}
+
+// Handle schedule hearing form submission
+document.addEventListener('DOMContentLoaded', function() {
+  const scheduleHearingForm = document.getElementById('scheduleHearingForm');
+  if (scheduleHearingForm) {
+    scheduleHearingForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch('schedule_hearing.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showMessage('Success', data.message);
+          closeModal('scheduleHearingModal');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showMessage('Error', data.message);
+        }
+      })
+      .catch(err => showMessage('Error', 'Failed to schedule hearing.'));
+    });
+  }
+});
+
 
 /* ====================================================================
    ANNOUNCEMENT MANAGEMENT

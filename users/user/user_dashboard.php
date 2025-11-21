@@ -212,16 +212,20 @@ if ($ann_stmt) {
                 <th>Location</th>
                 <th>Status</th>
                 <th>Date Filed</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               <?php
                 $user_id = $_SESSION['user_id'];
                 $complaints_query = $conn->prepare("
-                  SELECT reference_no, complaint_type, details, date_of_incident, location, status, date_filed
-                  FROM tbl_complaints
-                  WHERE user_id = ?
-                  ORDER BY date_filed DESC
+                  SELECT c.c_id, c.reference_no, c.complaint_type, c.details, c.date_of_incident, c.location, c.status, c.date_filed,
+                         COUNT(h.h_id) as hearing_count
+                  FROM tbl_complaints c
+                  LEFT JOIN tbl_hearings h ON c.c_id = h.c_id
+                  WHERE c.user_id = ?
+                  GROUP BY c.c_id
+                  ORDER BY c.date_filed DESC
                 ");
                 $complaints_query->bind_param("i", $user_id);
                 $complaints_query->execute();
@@ -237,6 +241,7 @@ if ($ann_stmt) {
                         $status = htmlspecialchars($row['status']);
                         $date_filed = date('M d, Y h:i A', strtotime($row['date_filed']));
                         $status_class = strtolower(str_replace(' ', '-', $status));
+                        $hearing_count = $row['hearing_count'];
 
                         echo "
                           <tr data-status='{$status}'>
@@ -245,7 +250,11 @@ if ($ann_stmt) {
                             <td style='max-width:200px;word-break:break-word;font-size:13px;'>{$details}</td>
                             <td style='font-size:13px;'>{$date_incident}</td>
                             <td style='max-width:150px;word-break:break-word;font-size:13px;'>{$location}</td>
-                            <td><span class='status-badge {$status_class}'>{$status}</span></td>
+                            <td><span class='status-badge {$status_class}'>{$status}" . ($hearing_count > 0 ? " ({$hearing_count} hearing" . ($hearing_count > 1 ? 's' : '') . ")" : "") . "</span></td>
+                            <td style='font-size:12px;'>{$date_filed}</td>
+                            <td>
+                              " . (($status === 'In-Progress' && ($complaint_type === 'Conflict with Neighbor' || $complaint_type === 'Conflict with Persons')) ? "<button class='action-btn view-btn' onclick='viewHearingDetails({$row['c_id']})'><i class='fas fa-eye'></i> View Hearings</button>" : "<span style='color:#888;font-size:12px;'>No action needed</span>") . "
+                            </td>
                             <td style='font-size:12px;'>{$date_filed}</td>
                           </tr>
                         ";
@@ -411,6 +420,7 @@ if ($ann_stmt) {
                       <option value="Noise Disturbance">Noise Disturbance</option>
                       <option value="Garbage Problem">Garbage Problem</option>
                       <option value="Conflict with Neighbor">Conflict with Neighbor</option>
+                      <option value="Conflict with Persons">Conflict with Persons</option>
                       <option value="Infrastructure Issue">Infrastructure Issue</option>
                       <option value="Public Safety">Public Safety Concern</option>
                       <option value="Environmental Issue">Environmental Issue</option>
@@ -446,6 +456,30 @@ if ($ann_stmt) {
                     <label for="complaint_location"><i class="fas fa-map-marker-alt"></i> Location *</label>
                     <input type="text" name="complaint_location" id="complaint_location" placeholder="Provide the exact location where the incident occurred (e.g., Purok 5, Barangay Hall, etc.)" required>
                     <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Be as specific as possible to help us locate and address the issue.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Conflict Information Section (Hidden by default) -->
+              <div class="form-section" id="conflictSection" style="display: none; margin-top: 30px;">
+                <h3 style="color: #1e3d8f; margin-bottom: 20px; font-size: 18px;"><i class="fas fa-users"></i> Conflict Information</h3>
+                <div class="form-grid">
+                  <div class="form-group full-width">
+                    <label for="involved_parties"><i class="fas fa-user-friends"></i> Names of Involved Parties *</label>
+                    <textarea name="involved_parties" id="involved_parties" rows="3" placeholder="List the full names of all parties involved in the conflict (including yourself if applicable)"></textarea>
+                    <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Provide complete names for proper identification.</small>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="relationship"><i class="fas fa-link"></i> Relationship to Complainant *</label>
+                    <input type="text" name="relationship" id="relationship" placeholder="Describe your relationship to the other parties (e.g., neighbor, family member, landlord, etc.)">
+                    <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Explain how you are connected to the involved parties.</small>
+                  </div>
+
+                  <div class="form-group full-width">
+                    <label for="evidence"><i class="fas fa-file-upload"></i> Supporting Evidence or Information</label>
+                    <textarea name="evidence" id="evidence" rows="4" placeholder="Provide any supporting documents, witness statements, photos, or additional information that can help resolve this conflict."></textarea>
+                    <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">Optional but recommended: Include details about witnesses, previous incidents, or any documentation.</small>
                   </div>
                 </div>
               </div>
@@ -498,6 +532,50 @@ if ($ann_stmt) {
     </div>
   </div>
 
+  <!-- VIEW HEARING DETAILS MODAL -->
+  <div id="viewHearingModal" class="modal">
+    <div class="modal-content" style="max-width:800px">
+      <span class="close-btn" onclick="closeModal('viewHearingModal')" style="float:right;cursor:pointer">&times;</span>
+      <h3 style="color: #1e3d8f; margin-bottom: 20px;"><i class="fas fa-calendar-alt"></i> Hearing Details</h3>
+      <div id="hearingDetails" style="line-height:1.6">
+        <!-- Hearing details will be loaded here -->
+      </div>
+      <div style="margin-top:20px;text-align:right">
+        <button onclick="closeModal('viewHearingModal')" style="padding:10px 20px;background:#6c757d;color:white;border:none;border-radius:6px;">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script src="../../scripts/user_dashboard.js"></script>
+  <script>
+    // Toggle conflict information section based on complaint type
+    document.addEventListener('DOMContentLoaded', function() {
+      const complaintTypeSelect = document.getElementById('complaint_type');
+      const conflictSection = document.getElementById('conflictSection');
+      const involvedParties = document.getElementById('involved_parties');
+      const relationship = document.getElementById('relationship');
+
+      function toggleConflictSection() {
+        const selectedType = complaintTypeSelect.value;
+        if (selectedType === 'Conflict with Neighbor' || selectedType === 'Conflict with Persons') {
+          conflictSection.style.display = 'block';
+          involvedParties.required = true;
+          relationship.required = true;
+        } else {
+          conflictSection.style.display = 'none';
+          involvedParties.required = false;
+          relationship.required = false;
+          // Clear fields when hidden
+          involvedParties.value = '';
+          relationship.value = '';
+          document.getElementById('evidence').value = '';
+        }
+      }
+
+      complaintTypeSelect.addEventListener('change', toggleConflictSection);
+      // Initial check in case of form reset or pre-selected value
+      toggleConflictSection();
+    });
+  </script>
 </body>
 </html>

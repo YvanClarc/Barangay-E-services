@@ -16,6 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $complaint_details = trim($_POST['complaint_details']);
     $complaint_date = trim($_POST['complaint_date']);
     $complaint_location = trim($_POST['complaint_location']);
+    $involved_parties = isset($_POST['involved_parties']) ? trim($_POST['involved_parties']) : null;
+    $relationship = isset($_POST['relationship']) ? trim($_POST['relationship']) : null;
+    $evidence = isset($_POST['evidence']) ? trim($_POST['evidence']) : null;
     $status = "Pending";
 
     // ✅ Optional: generate a reference number for tracking
@@ -31,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // 💾 Insert into database
-    $stmt = $conn->prepare("INSERT INTO tbl_complaints (user_id, reference_no, complaint_type, details, date_of_incident, location, status, date_filed)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
-    $stmt->bind_param("issssss", $user_id, $reference_no, $complaint_type, $complaint_details, $complaint_date, $complaint_location, $status);
+    $stmt = $conn->prepare("INSERT INTO tbl_complaints (user_id, reference_no, complaint_type, details, date_of_incident, location, status, date_filed, involved_parties, relationship, evidence)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)");
+    $stmt->bind_param("isssssssss", $user_id, $reference_no, $complaint_type, $complaint_details, $complaint_date, $complaint_location, $status, $involved_parties, $relationship, $evidence);
 
     if ($stmt->execute()) {
         echo "<script>

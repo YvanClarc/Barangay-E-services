@@ -70,6 +70,7 @@ $requests_result = $conn->query($requests_query);
 
 // === FETCH COMPLAINTS ===
 $complaints_query = "SELECT c.c_id, c.reference_no, c.complaint_type, c.details, c.date_of_incident, c.location, c.status, c.date_filed,
+                            c.involved_parties, c.relationship, c.evidence,
                             u.first_name, u.last_name, u.email
                      FROM tbl_complaints c
                      LEFT JOIN tbl_users u ON c.user_id = u.id
@@ -450,6 +451,14 @@ $announcements_result = $conn->query($announcements_query);
                     <td>
                       <button onclick="viewComplaintDetails(<?= $comp['c_id'] ?>)" title="View Details" style="margin-right:5px;padding:5px 8px;background:#17a2b8;color:white;border:none;border-radius:4px"><i class="fas fa-eye"></i></button>
                       <?php if (strtolower($comp['status']) === 'pending'): ?>
+                        <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'In-Progress')" title="Start Progress" style="margin-right:5px;padding:5px 8px;background:#ffc107;color:#212529;border:none;border-radius:4px"><i class="fas fa-play"></i></button>
+                        <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Resolved')" title="Resolve" style="margin-right:5px;padding:5px 8px;background:#28a745;color:white;border:none;border-radius:4px"><i class="fas fa-check-circle"></i></button>
+                        <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Dismissed')" title="Dismiss" style="padding:5px 8px;background:#dc3545;color:white;border:none;border-radius:4px"><i class="fas fa-times-circle"></i></button>
+                      <?php elseif (strtolower($comp['status']) === 'in-progress' && (strtolower($comp['complaint_type']) === 'conflict with neighbor' || strtolower($comp['complaint_type']) === 'conflict with persons')): ?>
+                        <button onclick="scheduleHearing(<?= $comp['c_id'] ?>)" title="Schedule Hearing" style="margin-right:5px;padding:5px 8px;background:#17a2b8;color:white;border:none;border-radius:4px"><i class="fas fa-calendar-plus"></i></button>
+                        <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Resolved')" title="Resolve" style="margin-right:5px;padding:5px 8px;background:#28a745;color:white;border:none;border-radius:4px"><i class="fas fa-check-circle"></i></button>
+                        <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Unresolved')" title="Mark Unresolved" style="padding:5px 8px;background:#fd7e14;color:white;border:none;border-radius:4px"><i class="fas fa-times"></i></button>
+                      <?php elseif (strtolower($comp['status']) === 'in-progress'): ?>
                         <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Resolved')" title="Resolve" style="margin-right:5px;padding:5px 8px;background:#28a745;color:white;border:none;border-radius:4px"><i class="fas fa-check-circle"></i></button>
                         <button onclick="updateComplaintStatus(<?= $comp['c_id'] ?>, 'Dismissed')" title="Dismiss" style="padding:5px 8px;background:#dc3545;color:white;border:none;border-radius:4px"><i class="fas fa-times-circle"></i></button>
                       <?php else: ?>
@@ -787,6 +796,37 @@ $announcements_result = $conn->query($announcements_query);
         <div style="display:flex;gap:8px">
           <button type="submit" style="background:#28a745;color:white;border:none;padding:10px 20px;border-radius:4px">Approve & Schedule</button>
           <button type="button" onclick="closeModal('scheduleModal')" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCHEDULE HEARING MODAL -->
+  <div id="scheduleHearingModal" class="modal">
+    <div class="modal-content" style="max-width:700px">
+      <span class="close-btn" onclick="closeModal('scheduleHearingModal')" style="float:right;cursor:pointer">&times;</span>
+      <h3 style="color: #1e3d8f; margin-bottom: 20px;"><i class="fas fa-calendar-plus"></i> Schedule Hearing</h3>
+      <form id="scheduleHearingForm">
+        <input type="hidden" id="hearing_c_id" name="c_id">
+        <div style="margin-bottom:15px">
+          <label for="hearing_no"><i class="fas fa-hashtag"></i> Hearing Number:</label>
+          <select id="hearing_no" name="hearing_no" required style="width:100%;padding:8px;margin-top:5px;border:1px solid #ddd;border-radius:4px">
+            <option value="1">1st Hearing</option>
+            <option value="2">2nd Hearing</option>
+            <option value="3">3rd Hearing</option>
+          </select>
+        </div>
+        <div style="margin-bottom:15px">
+          <label for="hearing_date"><i class="fas fa-calendar-day"></i> Hearing Date:</label>
+          <input type="date" id="hearing_date" name="hearing_date" required style="width:100%;padding:8px;margin-top:5px;border:1px solid #ddd;border-radius:4px">
+        </div>
+        <div style="margin-bottom:15px">
+          <label for="hearing_time"><i class="fas fa-clock"></i> Hearing Time:</label>
+          <input type="time" id="hearing_time" name="hearing_time" required style="width:100%;padding:8px;margin-top:5px;border:1px solid #ddd;border-radius:4px">
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="submit" style="background:#28a745;color:white;border:none;padding:10px 20px;border-radius:4px"><i class="fas fa-calendar-check"></i> Schedule Hearing</button>
+          <button type="button" onclick="closeModal('scheduleHearingModal')" style="background:#6c757d;color:white;border:none;padding:10px 20px;border-radius:4px">Cancel</button>
         </div>
       </form>
     </div>

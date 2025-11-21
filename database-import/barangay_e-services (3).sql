@@ -61,7 +61,10 @@ CREATE TABLE `tbl_complaints` (
   `date_of_incident` date NOT NULL,
   `location` varchar(255) NOT NULL,
   `status` varchar(50) DEFAULT 'Pending',
-  `date_filed` datetime DEFAULT current_timestamp()
+  `date_filed` datetime DEFAULT current_timestamp(),
+  `involved_parties` text DEFAULT NULL,
+  `relationship` varchar(255) DEFAULT NULL,
+  `evidence` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -78,6 +81,20 @@ INSERT INTO `tbl_complaints` (`c_id`, `user_id`, `reference_no`, `complaint_type
 (7, 2, 'CMP-691AD8EA4BB5A', 'Noise Disturbance', 'wdadadasdwdadadasdwdadadasdwdadadasdwdadadasdwdadadasdwdadadasd', '2025-11-17', 'purok gemelina', 'Pending', '2025-11-17 16:12:26');
 
 -- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_hearings`
+--
+
+CREATE TABLE `tbl_hearings` (
+  `h_id` int(11) NOT NULL,
+  `c_id` int(11) NOT NULL,
+  `hearing_no` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `status` enum('Scheduled','Completed','Rescheduled') DEFAULT 'Scheduled',
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Table structure for table `tbl_requests`
@@ -166,6 +183,13 @@ ALTER TABLE `tbl_complaints`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `tbl_hearings`
+--
+ALTER TABLE `tbl_hearings`
+  ADD PRIMARY KEY (`h_id`),
+  ADD KEY `c_id` (`c_id`);
+
+--
 -- Indexes for table `tbl_requests`
 --
 ALTER TABLE `tbl_requests`
@@ -197,6 +221,13 @@ ALTER TABLE `tbl_complaints`
   MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT for table `tbl_hearings`
+--
+ALTER TABLE `tbl_hearings`
+  MODIFY `h_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+COMMIT;
+
+--
 -- AUTO_INCREMENT for table `tbl_requests`
 --
 ALTER TABLE `tbl_requests`
@@ -223,6 +254,12 @@ ALTER TABLE `tbl_announcements`
 --
 ALTER TABLE `tbl_complaints`
   ADD CONSTRAINT `tbl_complaints_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `tbl_users` (`id`);
+
+--
+-- Constraints for table `tbl_hearings`
+--
+ALTER TABLE `tbl_hearings`
+  ADD CONSTRAINT `tbl_hearings_ibfk_1` FOREIGN KEY (`c_id`) REFERENCES `tbl_complaints` (`c_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tbl_requests`

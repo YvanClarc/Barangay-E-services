@@ -240,6 +240,40 @@ function viewPickupDetails(r_id) {
     .catch(err => alert('Failed to load pickup details.'));
 }
 
+function viewHearingDetails(c_id) {
+  // Fetch hearing details
+  fetch('../admin/get_hearing.php?c_id=' + encodeURIComponent(c_id))
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        let html = '<div style="max-height:400px;overflow-y:auto;">';
+        if (data.hearings.length > 0) {
+          data.hearings.forEach(hearing => {
+            const hearingDate = new Date(hearing.date + ' ' + hearing.time).toLocaleString();
+            const statusClass = hearing.status === 'Scheduled' ? 'status-pending' :
+                               hearing.status === 'Completed' ? 'status-active' : 'status-denied';
+            html += `
+              <div style="border:1px solid #ddd;padding:15px;margin-bottom:10px;border-radius:8px;">
+                <h4 style="margin:0 0 10px 0;color:#1e3d8f;">${hearing.hearing_no}${hearing.hearing_no === 1 ? 'st' : hearing.hearing_no === 2 ? 'nd' : 'rd'} Hearing</h4>
+                <p style="margin:5px 0;"><strong>Date & Time:</strong> ${hearingDate}</p>
+                <p style="margin:5px 0;"><strong>Status:</strong> <span class="${statusClass}">${hearing.status}</span></p>
+                <p style="margin:5px 0;font-size:12px;color:#666;"><strong>Scheduled:</strong> ${new Date(hearing.created_at).toLocaleString()}</p>
+              </div>
+            `;
+          });
+        } else {
+          html += '<p style="text-align:center;color:#666;padding:40px;">No hearings scheduled yet.</p>';
+        }
+        html += '</div>';
+        document.getElementById('hearingDetails').innerHTML = html;
+        openModal('viewHearingModal');
+      } else {
+        alert('Failed to load hearing details: ' + data.message);
+      }
+    })
+    .catch(err => alert('Failed to load hearing details.'));
+}
+
 function logout(confirmMsg = 'Are you sure you want to log out?') {
   if (!confirm(confirmMsg)) return;
   // if page is inside /users/... go up two levels to project root, otherwise use root path
